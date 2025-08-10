@@ -484,28 +484,50 @@ class PortfolioPage extends StatelessWidget {
           const SizedBox(height: 60),
           ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 1200),
-            child: GridView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: MediaQuery.of(context).size.width > 900 ? 2 : 1,
-                crossAxisSpacing: 30,
-                mainAxisSpacing: 30,
-                childAspectRatio: MediaQuery.of(context).size.width > 900
-                    ? 1.3
-                    : 1.8,
-              ),
-              itemCount: projects.length,
-              itemBuilder: (context, index) {
-                final project = projects[index];
-                return ProjectCard(
-                  name: project['name'] as String,
-                  stack: project['stack'] as String,
-                  role: project['role'] as String,
-                  icon: project['icon'] as IconData,
-                  description: project['description'] as String,
-                  features: List<String>.from(project['features'] as List),
-                );
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                if (constraints.maxWidth > 900) {
+                  // Desktop layout - 2 columns with Wrap
+                  return Wrap(
+                    spacing: 30,
+                    runSpacing: 30,
+                    alignment: WrapAlignment.start,
+                    children: projects.map((project) {
+                      return SizedBox(
+                        width: (constraints.maxWidth - 30) / 2,
+                        child: ProjectCard(
+                          name: project['name'] as String,
+                          stack: project['stack'] as String,
+                          role: project['role'] as String,
+                          icon: project['icon'] as IconData,
+                          description: project['description'] as String,
+                          features: List<String>.from(
+                            project['features'] as List,
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  );
+                } else {
+                  // Mobile layout - 1 column
+                  return Column(
+                    children: projects.map((project) {
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 30),
+                        child: ProjectCard(
+                          name: project['name'] as String,
+                          stack: project['stack'] as String,
+                          role: project['role'] as String,
+                          icon: project['icon'] as IconData,
+                          description: project['description'] as String,
+                          features: List<String>.from(
+                            project['features'] as List,
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  );
+                }
               },
             ),
           ),

@@ -5,7 +5,7 @@ class ProjectCard extends StatefulWidget {
   final String stack;
   final String role;
   final IconData icon;
-  final String? description;
+  final String description;
   final List<String>? images;
   final List<String>? features;
 
@@ -15,7 +15,7 @@ class ProjectCard extends StatefulWidget {
     required this.stack,
     required this.role,
     required this.icon,
-    this.description,
+    required this.description,
     this.images,
     this.features,
   });
@@ -58,7 +58,7 @@ class _ProjectCardState extends State<ProjectCard>
     showDialog(
       context: context,
       barrierDismissible: true,
-      barrierColor: Colors.black.withOpacity(0.5),
+      barrierColor: Colors.black.withValues(alpha: 0.5),
       builder: (BuildContext context) {
         return Dialog(
           backgroundColor: Colors.transparent,
@@ -72,7 +72,7 @@ class _ProjectCardState extends State<ProjectCard>
               borderRadius: BorderRadius.circular(20),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.2),
+                  color: Colors.black.withValues(alpha: 0.2),
                   blurRadius: 30,
                   offset: const Offset(0, 15),
                 ),
@@ -100,7 +100,7 @@ class _ProjectCardState extends State<ProjectCard>
                       Container(
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.2),
+                          color: Colors.white.withValues(alpha: 0.2),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Icon(widget.icon, size: 32, color: Colors.white),
@@ -138,7 +138,7 @@ class _ProjectCardState extends State<ProjectCard>
                           size: 28,
                         ),
                         style: IconButton.styleFrom(
-                          backgroundColor: Colors.white.withOpacity(0.2),
+                          backgroundColor: Colors.white.withValues(alpha: 0.2),
                         ),
                       ),
                     ],
@@ -288,10 +288,10 @@ class _ProjectCardState extends State<ProjectCard>
                     vertical: 6,
                   ),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF3498DB).withOpacity(0.1),
+                    color: const Color(0xFF3498DB).withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(
-                      color: const Color(0xFF3498DB).withOpacity(0.3),
+                      color: const Color(0xFF3498DB).withValues(alpha: 0.3),
                     ),
                   ),
                   child: Text(
@@ -400,7 +400,7 @@ class _ProjectCardState extends State<ProjectCard>
                   border: Border.all(color: const Color(0xFFE8E9ED)),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
+                      color: Colors.black.withValues(alpha: 0.05),
                       blurRadius: _elevationAnimation.value,
                       offset: Offset(0, _elevationAnimation.value / 2),
                     ),
@@ -414,7 +414,9 @@ class _ProjectCardState extends State<ProjectCard>
                         Container(
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            color: const Color(0xFF3498DB).withOpacity(0.1),
+                            color: const Color(
+                              0xFF3498DB,
+                            ).withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Icon(
@@ -442,7 +444,7 @@ class _ProjectCardState extends State<ProjectCard>
                           ),
                           decoration: BoxDecoration(
                             color: _isHovered
-                                ? const Color(0xFF3498DB).withOpacity(0.1)
+                                ? const Color(0xFF3498DB).withValues(alpha: 0.1)
                                 : Colors.transparent,
                             borderRadius: BorderRadius.circular(16),
                           ),
@@ -485,6 +487,23 @@ class _ProjectCardState extends State<ProjectCard>
                     const SizedBox(height: 8),
                     Text(
                       widget.role,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: Color(0xFF5D6D7E),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      'Overview',
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF34495E),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      widget.description,
                       style: const TextStyle(
                         fontSize: 14,
                         color: Color(0xFF5D6D7E),
