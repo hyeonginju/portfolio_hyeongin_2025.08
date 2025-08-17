@@ -133,10 +133,11 @@ class _ExperienceCardState extends State<ExperienceCard>
                           children: [
                             if (widget.company.contains("Dable")) ...[
                               _buildDetailSection("Software Engineer", [
-                                "Led multiple Flutter & React Native projects from start to launch",
-                                "Closely collaborated with designers, planners, and external partners",
-                                "Built and launched 5+ production-ready mobile apps, used by 10K+ users",
-                                "Fast delivery cycles, feature ownership, and agile teams",
+                                "Led 5+ production-ready Flutter mobile apps across Android, iOS, and Windows platforms",
+                                "Built advanced UI systems with background animations and scroll-optimized components",
+                                "Delivered patient management systems with real-time messaging for hospital clients",
+                                "Successfully released all apps to Google Play and App Store on scheduled timelines",
+                                "Collaborated closely with designers and product owners in fast-paced agile environments",
                               ]),
                             ] else ...[
                               _buildDetailSection("Software Engineer", [

@@ -28,29 +28,41 @@ class _ProjectCardState extends State<ProjectCard>
     with TickerProviderStateMixin {
   bool _isHovered = false;
   late AnimationController _animationController;
+  late AnimationController _backgroundController;
   late Animation<double> _scaleAnimation;
   late Animation<double> _elevationAnimation;
+  late Animation<double> _backgroundAnimation;
 
   @override
   void initState() {
     super.initState();
     _animationController = AnimationController(
-      duration: const Duration(milliseconds: 200),
+      duration: const Duration(milliseconds: 300),
       vsync: this,
     );
 
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 1.02).animate(
+    _backgroundController = AnimationController(
+      duration: const Duration(milliseconds: 400),
+      vsync: this,
+    );
+
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 1.03).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
     );
 
-    _elevationAnimation = Tween<double>(begin: 10.0, end: 25.0).animate(
+    _elevationAnimation = Tween<double>(begin: 8.0, end: 30.0).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
+    );
+
+    _backgroundAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _backgroundController, curve: Curves.easeInOut),
     );
   }
 
   @override
   void dispose() {
     _animationController.dispose();
+    _backgroundController.dispose();
     super.dispose();
   }
 
@@ -84,13 +96,16 @@ class _ProjectCardState extends State<ProjectCard>
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.all(24),
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     gradient: LinearGradient(
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
-                      colors: [Color(0xFF3498DB), Color(0xFF2980B9)],
+                      colors: [
+                        const Color(0xFF00BFFF),
+                        const Color(0xFF4682B4),
+                      ],
                     ),
-                    borderRadius: BorderRadius.only(
+                    borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(20),
                       topRight: Radius.circular(20),
                     ),
@@ -157,12 +172,10 @@ class _ProjectCardState extends State<ProjectCard>
                         ], isDescription: true),
 
                         // Description Section
-                        if (widget.description != null) ...[
-                          const SizedBox(height: 24),
-                          _buildSection('Project Overview', [
-                            widget.description!,
-                          ], isDescription: true),
-                        ],
+                        const SizedBox(height: 24),
+                        _buildSection('Project Overview', [
+                          widget.description,
+                        ], isDescription: true),
 
                         // Features Section
                         if (widget.features != null &&
@@ -240,7 +253,7 @@ class _ProjectCardState extends State<ProjectCard>
                     height: 8,
                     margin: const EdgeInsets.only(top: 6, right: 12),
                     decoration: const BoxDecoration(
-                      color: Color(0xFF3498DB),
+                      color: Color(0xFF00BFFF),
                       shape: BoxShape.circle,
                     ),
                   ),
@@ -288,17 +301,17 @@ class _ProjectCardState extends State<ProjectCard>
                     vertical: 6,
                   ),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF3498DB).withValues(alpha: 0.1),
+                    color: const Color(0xFF00BFFF).withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(
-                      color: const Color(0xFF3498DB).withValues(alpha: 0.3),
+                      color: const Color(0xFF00BFFF).withValues(alpha: 0.3),
                     ),
                   ),
                   child: Text(
                     tech,
                     style: const TextStyle(
                       fontSize: 14,
-                      color: Color(0xFF3498DB),
+                      color: Color(0xFF00BFFF),
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -363,7 +376,7 @@ class _ProjectCardState extends State<ProjectCard>
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: const Center(
-                  child: CircularProgressIndicator(color: Color(0xFF3498DB)),
+                  child: CircularProgressIndicator(color: Color(0xFF00BFFF)),
                 ),
               );
             },
@@ -379,137 +392,398 @@ class _ProjectCardState extends State<ProjectCard>
       onEnter: (_) {
         setState(() => _isHovered = true);
         _animationController.forward();
+        _backgroundController.forward();
       },
       onExit: (_) {
         setState(() => _isHovered = false);
         _animationController.reverse();
+        _backgroundController.reverse();
       },
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
         onTap: _showProjectDialog,
         child: AnimatedBuilder(
-          animation: _animationController,
+          animation: Listenable.merge([
+            _animationController,
+            _backgroundController,
+          ]),
           builder: (context, child) {
             return Transform.scale(
               scale: _scaleAnimation.value,
               child: Container(
-                padding: const EdgeInsets.all(32),
+                height: 350, // 고정 높이로 일관성 있는 레이아웃
                 decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: const Color(0xFFE8E9ED)),
+                  borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.05),
+                      color: const Color(0xFF00BFFF).withValues(alpha: 0.15),
                       blurRadius: _elevationAnimation.value,
-                      offset: Offset(0, _elevationAnimation.value / 2),
+                      offset: Offset(0, _elevationAnimation.value / 3),
+                      spreadRadius: 2,
                     ),
                   ],
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: const Color(
-                              0xFF3498DB,
-                            ).withValues(alpha: 0.1),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Icon(
-                            widget.icon,
-                            size: 24,
-                            color: const Color(0xFF3498DB),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Stack(
+                    children: [
+                      // 메인 배경
+                      Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [Colors.white, const Color(0xFFF8FBFF)],
                           ),
                         ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Text(
-                            widget.name,
-                            style: const TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFF2C3E50),
+                      ),
+
+                      // 호버 시 동적 배경 오버레이
+                      AnimatedOpacity(
+                        duration: const Duration(milliseconds: 300),
+                        opacity: _backgroundAnimation.value * 0.05,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [
+                                const Color(0xFF00BFFF),
+                                const Color(0xFF4682B4),
+                              ],
                             ),
                           ),
                         ),
-                        AnimatedContainer(
-                          duration: const Duration(milliseconds: 200),
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 4,
-                          ),
-                          decoration: BoxDecoration(
-                            color: _isHovered
-                                ? const Color(0xFF3498DB).withValues(alpha: 0.1)
-                                : Colors.transparent,
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: Icon(
-                            Icons.open_in_new,
-                            color: _isHovered
-                                ? const Color(0xFF3498DB)
-                                : const Color(0xFF95A5A6),
-                            size: 18,
+                      ),
+
+                      // 장식적 원형 요소들
+                      Positioned(
+                        top: -50,
+                        right: -50,
+                        child: AnimatedOpacity(
+                          duration: const Duration(milliseconds: 400),
+                          opacity: _isHovered ? 0.1 : 0.05,
+                          child: Container(
+                            width: 120,
+                            height: 120,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              gradient: RadialGradient(
+                                colors: [
+                                  const Color(
+                                    0xFF00BFFF,
+                                  ).withValues(alpha: 0.3),
+                                  Colors.transparent,
+                                ],
+                              ),
+                            ),
                           ),
                         ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    Text(
-                      'Stack',
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFF34495E),
                       ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      widget.stack,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        color: Color(0xFF5D6D7E),
+
+                      Positioned(
+                        bottom: -30,
+                        left: -30,
+                        child: AnimatedOpacity(
+                          duration: const Duration(milliseconds: 400),
+                          opacity: _isHovered ? 0.08 : 0.03,
+                          child: Container(
+                            width: 80,
+                            height: 80,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              gradient: RadialGradient(
+                                colors: [
+                                  const Color(
+                                    0xFF4682B4,
+                                  ).withValues(alpha: 0.3),
+                                  Colors.transparent,
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      'Role',
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFF34495E),
+
+                      // 메인 콘텐츠
+                      Container(
+                        padding: const EdgeInsets.all(28),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // 헤더
+                            Row(
+                              children: [
+                                AnimatedContainer(
+                                  duration: const Duration(milliseconds: 300),
+                                  padding: const EdgeInsets.all(16),
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                      colors: _isHovered
+                                          ? [
+                                              const Color(0xFF00BFFF),
+                                              const Color(0xFF4682B4),
+                                            ]
+                                          : [
+                                              const Color(
+                                                0xFF00BFFF,
+                                              ).withValues(alpha: 0.1),
+                                              const Color(
+                                                0xFF4682B4,
+                                              ).withValues(alpha: 0.05),
+                                            ],
+                                    ),
+                                    borderRadius: BorderRadius.circular(16),
+                                    boxShadow: _isHovered
+                                        ? [
+                                            BoxShadow(
+                                              color: const Color(
+                                                0xFF00BFFF,
+                                              ).withValues(alpha: 0.3),
+                                              blurRadius: 12,
+                                              offset: const Offset(0, 4),
+                                            ),
+                                          ]
+                                        : [],
+                                  ),
+                                  child: Icon(
+                                    widget.icon,
+                                    size: 28,
+                                    color: _isHovered
+                                        ? Colors.white
+                                        : const Color(0xFF00BFFF),
+                                  ),
+                                ),
+                                const SizedBox(width: 16),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        widget.name,
+                                        style: TextStyle(
+                                          fontSize: 22,
+                                          fontWeight: FontWeight.bold,
+                                          color: _isHovered
+                                              ? const Color(0xFF1565C0)
+                                              : const Color(0xFF2C3E50),
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 10,
+                                          vertical: 4,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: const Color(
+                                            0xFF00BFFF,
+                                          ).withValues(alpha: 0.1),
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
+                                        ),
+                                        child: Text(
+                                          '${widget.stack.split(',').length} Technologies',
+                                          style: const TextStyle(
+                                            fontSize: 12,
+                                            color: Color(0xFF00BFFF),
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                AnimatedContainer(
+                                  duration: const Duration(milliseconds: 200),
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    color: _isHovered
+                                        ? const Color(
+                                            0xFF00BFFF,
+                                          ).withValues(alpha: 0.1)
+                                        : Colors.transparent,
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Icon(
+                                    Icons.arrow_outward,
+                                    color: _isHovered
+                                        ? const Color(0xFF00BFFF)
+                                        : const Color(0xFF95A5A6),
+                                    size: 20,
+                                  ),
+                                ),
+                              ],
+                            ),
+
+                            const SizedBox(height: 24),
+
+                            // Role 배지
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 6,
+                              ),
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [
+                                    const Color(
+                                      0xFF4CAF50,
+                                    ).withValues(alpha: 0.1),
+                                    const Color(
+                                      0xFF2E7D32,
+                                    ).withValues(alpha: 0.05),
+                                  ],
+                                ),
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(
+                                  color: const Color(
+                                    0xFF4CAF50,
+                                  ).withValues(alpha: 0.3),
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Container(
+                                    width: 6,
+                                    height: 6,
+                                    decoration: const BoxDecoration(
+                                      color: Color(0xFF4CAF50),
+                                      shape: BoxShape.circle,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 6),
+                                  Flexible(
+                                    child: Text(
+                                      widget.role,
+                                      style: const TextStyle(
+                                        fontSize: 13,
+                                        color: Color(0xFF2E7D32),
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                            const SizedBox(height: 16),
+
+                            // Description
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Project Overview',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w700,
+                                      color: _isHovered
+                                          ? const Color(0xFF1565C0)
+                                          : const Color(0xFF34495E),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Expanded(
+                                    child: Text(
+                                      widget.description,
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        color: Color(0xFF5D6D7E),
+                                        height: 1.5,
+                                      ),
+                                      maxLines: 4,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                            // Tech Stack 미리보기
+                            const SizedBox(height: 16),
+                            Wrap(
+                              spacing: 6,
+                              runSpacing: 6,
+                              children: [
+                                ...widget.stack
+                                    .split(',')
+                                    .take(3)
+                                    .map(
+                                      (tech) => Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 8,
+                                          vertical: 4,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: const Color(
+                                            0xFF00BFFF,
+                                          ).withValues(alpha: 0.08),
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                        ),
+                                        child: Text(
+                                          tech.trim(),
+                                          style: const TextStyle(
+                                            fontSize: 11,
+                                            color: Color(0xFF00BFFF),
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                if (widget.stack.split(',').length > 3)
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                      vertical: 4,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: const Color(
+                                        0xFF95A5A6,
+                                      ).withValues(alpha: 0.1),
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Text(
+                                      '+${widget.stack.split(',').length - 3}',
+                                      style: const TextStyle(
+                                        fontSize: 11,
+                                        color: Color(0xFF95A5A6),
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      widget.role,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        color: Color(0xFF5D6D7E),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      'Overview',
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFF34495E),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      widget.description,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        color: Color(0xFF5D6D7E),
-                      ),
-                    ),
-                  ],
+
+                      // 호버 시 미세한 빛나는 테두리 효과
+                      if (_isHovered)
+                        Positioned.fill(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(
+                                color: const Color(
+                                  0xFF00BFFF,
+                                ).withValues(alpha: 0.3),
+                                width: 1.5,
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
                 ),
               ),
             );

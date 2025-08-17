@@ -139,9 +139,24 @@ class PortfolioPage extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 40),
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Color(0xFFE3F2FD), // 매우 연한 블루
+            Color(0xFFF8FBFF), // 거의 흰색에 가까운 블루 틴트
+          ],
+        ),
+      ),
       child: Column(
         children: [
-          Text('About Me', style: Theme.of(context).textTheme.headlineMedium),
+          Text(
+            'About Me',
+            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+              color: const Color(0xFF1565C0), // 진한 블루
+            ),
+          ),
           const SizedBox(height: 40),
           ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 800),
@@ -150,7 +165,9 @@ class PortfolioPage extends StatelessWidget {
               'I specialize in Flutter and React Native, focusing on creating user-centered solutions '
               'that solve real-world problems. With experience in leading development projects from '
               'planning to deployment, I bring both technical excellence and product vision to every project.',
-              style: Theme.of(context).textTheme.bodyLarge,
+              style: Theme.of(
+                context,
+              ).textTheme.bodyLarge?.copyWith(color: const Color(0xFF2E3B52)),
               textAlign: TextAlign.center,
             ),
           ),
@@ -163,47 +180,73 @@ class PortfolioPage extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 40),
-      color: const Color(0xFFF1F2F6),
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Color(0xFFF0F7FF), // 연한 아이스 블루
+            Color(0xFFE8F4FD), // 조금 더 진한 아이스 블루
+          ],
+        ),
+      ),
       child: Column(
         children: [
           Text(
             'Technical Skills',
-            style: Theme.of(context).textTheme.headlineMedium,
+            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+              color: const Color(0xFF1565C0),
+            ),
           ),
           const SizedBox(height: 60),
           ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 1000),
-            child: GridView.count(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              crossAxisCount: MediaQuery.of(context).size.width > 600 ? 4 : 2,
-              crossAxisSpacing: 30,
-              mainAxisSpacing: 30,
-              childAspectRatio: MediaQuery.of(context).size.width > 600
-                  ? 0.9
-                  : 0.7,
-              children: [
-                _buildSkillCard('Languages', [
-                  'Dart',
-                  'JavaScript',
-                ], Icons.code),
-                _buildSkillCard('Frameworks', [
-                  'Flutter',
-                  'React Native',
-                ], Icons.phone_android),
-                _buildSkillCard('Tools', [
-                  'Git',
-                  'Firebase',
-                  'GCP',
-                  'Figma',
-                ], Icons.build),
-                _buildSkillCard('Platforms', [
-                  'Android',
-                  'iOS',
-                  'Web',
-                  'Windows',
-                ], Icons.computer),
-              ],
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final isWide = MediaQuery.of(context).size.width > 600;
+                final crossAxisCount = isWide ? 4 : 2;
+                final skills = [
+                  {
+                    'title': 'Languages',
+                    'items': ['Dart', 'JavaScript'],
+                    'icon': Icons.code,
+                  },
+                  {
+                    'title': 'Frameworks',
+                    'items': ['Flutter', 'React Native'],
+                    'icon': Icons.phone_android,
+                  },
+                  {
+                    'title': 'Tools',
+                    'items': ['Git', 'Firebase', 'GCP', 'Figma'],
+                    'icon': Icons.build,
+                  },
+                  {
+                    'title': 'Platforms',
+                    'items': ['Android', 'iOS', 'Web', 'Windows'],
+                    'icon': Icons.computer,
+                  },
+                ];
+
+                return Wrap(
+                  spacing: 30,
+                  runSpacing: 30,
+                  children: skills.map((skill) {
+                    return SizedBox(
+                      width: isWide
+                          ? (constraints.maxWidth -
+                                    (30 * (crossAxisCount - 1))) /
+                                crossAxisCount
+                          : (constraints.maxWidth - 30) / 2,
+                      child: _buildSkillCard(
+                        skill['title'] as String,
+                        List<String>.from(skill['items'] as List),
+                        skill['icon'] as IconData,
+                      ),
+                    );
+                  }).toList(),
+                );
+              },
             ),
           ),
         ],
@@ -212,38 +255,54 @@ class PortfolioPage extends StatelessWidget {
   }
 
   Widget _buildSkillCard(String title, List<String> skills, IconData icon) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFE8E9ED)),
-      ),
-
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, size: 40, color: const Color(0xFF3498DB)),
-          const SizedBox(height: 16),
-          Text(
-            title,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-              color: Color(0xFF2C3E50),
-            ),
+    return IntrinsicHeight(
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Colors.white, Color(0xFFFAFCFF)],
           ),
-          const SizedBox(height: 12),
-          ...skills.map(
-            (skill) => Padding(
-              padding: const EdgeInsets.symmetric(vertical: 2),
-              child: Text(
-                skill,
-                style: const TextStyle(fontSize: 14, color: Color(0xFF5D6D7E)),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: const Color(0xFFB3E5FC), width: 1),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFF00BFFF).withValues(alpha: 0.1),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 40, color: const Color(0xFF00BFFF)),
+            const SizedBox(height: 16),
+            Text(
+              title,
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF1565C0),
               ),
             ),
-          ),
-        ],
+            const SizedBox(height: 12),
+            ...skills.map(
+              (skill) => Padding(
+                padding: const EdgeInsets.symmetric(vertical: 2),
+                child: Text(
+                  skill,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: Color(0xFF546E7A),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -252,29 +311,41 @@ class PortfolioPage extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 40),
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [Color(0xFFF8FBFF), Color(0xFFFFFFFF)],
+        ),
+      ),
       child: Column(
         children: [
-          Text('Education', style: Theme.of(context).textTheme.headlineMedium),
+          Text(
+            'Education',
+            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+              color: const Color(0xFF1565C0),
+            ),
+          ),
           const SizedBox(height: 60),
           ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 800),
             child: Column(
               children: [
                 _buildEducationCard(
-                  'B.S. in Computer Engineering (2026)',
                   'Korea Institute of Technology and Distance Lifelong Education',
+                  'B.S. in Computer Engineering (2026)',
                   Icons.school,
                 ),
                 const SizedBox(height: 30),
                 _buildEducationCard(
-                  'B.S. in Information & Communication Engineering (withdrawn)',
                   'Kongju National University',
+                  'B.S. in Information & Communication Engineering (withdrawn)',
                   Icons.school,
                 ),
                 const SizedBox(height: 30),
                 _buildEducationCard(
-                  'Educational institution for training software innovation talent',
                   '42 Seoul',
+                  'Educational institution for training software innovation talent',
                   Icons.code,
                 ),
               ],
@@ -290,19 +361,37 @@ class PortfolioPage extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(32),
       decoration: BoxDecoration(
-        color: Colors.white,
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Colors.white, Color(0xFFF5FAFF)],
+        ),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFE8E9ED)),
+        border: Border.all(color: const Color(0xFFB3E5FC)),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF4682B4).withValues(alpha: 0.08),
+            blurRadius: 12,
+            offset: const Offset(0, 6),
+          ),
+        ],
       ),
       child: Row(
         children: [
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: const Color(0xFF3498DB).withValues(alpha: 0.1),
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  const Color(0xFF00BFFF).withValues(alpha: 0.1),
+                  const Color(0xFF4682B4).withValues(alpha: 0.05),
+                ],
+              ),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Icon(icon, size: 32, color: const Color(0xFF3498DB)),
+            child: Icon(icon, size: 32, color: const Color(0xFF00BFFF)),
           ),
           const SizedBox(width: 24),
           Expanded(
@@ -314,7 +403,7 @@ class PortfolioPage extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFF2C3E50),
+                    color: Color(0xFF1565C0),
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -322,7 +411,7 @@ class PortfolioPage extends StatelessWidget {
                   institution,
                   style: const TextStyle(
                     fontSize: 16,
-                    color: Color(0xFF5D6D7E),
+                    color: Color(0xFF546E7A),
                   ),
                 ),
               ],
@@ -337,10 +426,24 @@ class PortfolioPage extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 40),
-      color: const Color(0xFFF1F2F6),
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Color(0xFFF0F8FF), // 앨리스 블루
+            Color(0xFFE6F3FF), // 연한 스카이 블루
+          ],
+        ),
+      ),
       child: Column(
         children: [
-          Text('Experience', style: Theme.of(context).textTheme.headlineMedium),
+          Text(
+            'Experience',
+            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+              color: const Color(0xFF1565C0),
+            ),
+          ),
           const SizedBox(height: 60),
           ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 800),
@@ -478,9 +581,21 @@ class PortfolioPage extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 40),
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [Colors.white, Color(0xFFF8FBFF)],
+        ),
+      ),
       child: Column(
         children: [
-          Text('Projects', style: Theme.of(context).textTheme.headlineMedium),
+          Text(
+            'Projects',
+            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+              color: const Color(0xFF1565C0),
+            ),
+          ),
           const SizedBox(height: 60),
           ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 1200),
@@ -540,7 +655,16 @@ class PortfolioPage extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 60, horizontal: 40),
-      color: const Color(0xFF2C3E50),
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Color(0xFF1E3A8A), // 진한 네이비 블루
+            Color(0xFF1565C0), // 미디엄 블루
+          ],
+        ),
+      ),
       child: Column(
         children: [
           Text(
@@ -567,12 +691,12 @@ class PortfolioPage extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 40),
-          const Divider(color: Color(0xFF34495E)),
+          const Divider(color: Color(0xFF3B82F6)),
           const SizedBox(height: 20),
           Text(
-            '© 2024 Hyeongin Ju. All rights reserved.',
+            '© 2025 Hyeongin Ju. All rights reserved.',
             style: TextStyle(
-              color: Colors.white.withValues(alpha: 0.7),
+              color: Colors.white.withValues(alpha: 0.8),
               fontSize: 14,
             ),
           ),
