@@ -500,6 +500,8 @@ class PortfolioPage extends StatelessWidget {
           'User authentication and profile management',
           'Push notifications and offline support',
         ],
+        'link':
+            'https://play.google.com/store/apps/details?id=com.monthlything.Together',
       },
       {
         'name': 'Healthlit',
@@ -515,6 +517,7 @@ class PortfolioPage extends StatelessWidget {
           'User progress tracking and analytics',
           'Responsive design for web accessibility',
         ],
+        'link': 'https://hlitdb.dplanit.co.kr/home',
       },
       {
         'name': 'Smart Hospital System',
@@ -532,10 +535,10 @@ class PortfolioPage extends StatelessWidget {
         ],
       },
       {
-        'name': 'Dplanit Morning',
+        'name': 'Dplanit Moming',
         'stack': 'Flutter(Android/iOS), BLoC, FCM',
         'role': 'Lead Flutter Developer(80%)',
-        'icon': Icons.wb_sunny,
+        'icon': Icons.family_restroom,
         'description':
             'A morning routine and productivity app designed to help users start their day effectively. Features intelligent notifications and habit tracking.',
         'features': [
@@ -545,12 +548,13 @@ class PortfolioPage extends StatelessWidget {
           'Customizable morning routine templates',
           'Weather integration and daily insights',
         ],
+        'link': 'https://home.dplanit.co.kr/',
       },
       {
         'name': 'Dplanit Plus',
         'stack': 'React Native(Android/iOS), Redux, In App Purchase',
         'role': 'Lead React Native Developer(100%)',
-        'icon': Icons.shopping_cart,
+        'icon': Icons.pregnant_woman,
         'description':
             'Premium version of the planning application with advanced features and monetization through in-app purchases. Built with React Native for optimal performance.',
         'features': [
@@ -560,6 +564,8 @@ class PortfolioPage extends StatelessWidget {
           'Subscription management and user billing',
           'Enhanced UI/UX for premium user experience',
         ],
+        'link':
+            'https://play.google.com/store/apps/details?id=com.dable.dplanitplus&hl=ko',
       },
       {
         'name': 'Mocomoco',
@@ -575,6 +581,7 @@ class PortfolioPage extends StatelessWidget {
           'Push notifications for location-based events',
           'Social features and user interaction systems',
         ],
+        'link': 'https://www.notion.so/f43ea8938d0442c190ea8c629febb211?pvs=21',
       },
     ];
 
@@ -619,6 +626,7 @@ class PortfolioPage extends StatelessWidget {
                           features: List<String>.from(
                             project['features'] as List,
                           ),
+                          link: project['link'] as String?,
                         ),
                       );
                     }).toList(),
@@ -638,6 +646,7 @@ class PortfolioPage extends StatelessWidget {
                           features: List<String>.from(
                             project['features'] as List,
                           ),
+                          link: project['link'] as String?,
                         ),
                       );
                     }).toList(),

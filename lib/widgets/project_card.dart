@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProjectCard extends StatefulWidget {
   final String name;
@@ -8,6 +9,7 @@ class ProjectCard extends StatefulWidget {
   final String description;
   final List<String>? images;
   final List<String>? features;
+  final String? link;
 
   const ProjectCard({
     super.key,
@@ -18,6 +20,7 @@ class ProjectCard extends StatefulWidget {
     required this.description,
     this.images,
     this.features,
+    this.link,
   });
 
   @override
@@ -159,6 +162,7 @@ class _ProjectCardState extends State<ProjectCard>
                     ],
                   ),
                 ),
+
                 // Scrollable Content
                 Expanded(
                   child: SingleChildScrollView(
@@ -187,6 +191,12 @@ class _ProjectCardState extends State<ProjectCard>
                         // Tech Stack Section
                         const SizedBox(height: 24),
                         _buildTechStack(),
+
+                        // Link Section
+                        if (widget.link != null && widget.link!.isNotEmpty) ...[
+                          const SizedBox(height: 24),
+                          _buildLink(Icons.link, 'Link', widget.link),
+                        ],
 
                         // Project Images Section
                         if (widget.images != null &&
@@ -318,6 +328,43 @@ class _ProjectCardState extends State<ProjectCard>
                 ),
               )
               .toList(),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildLink(IconData icon, String text, String? url) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Link',
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF2C3E50),
+          ),
+        ),
+        const SizedBox(height: 16),
+        GestureDetector(
+          onTap: url != null ? () => _launchUrl(url) : null,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, color: Colors.black, size: 20),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  url!,
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 16,
+                    decoration: TextDecoration.none,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ],
     );
@@ -791,5 +838,12 @@ class _ProjectCardState extends State<ProjectCard>
         ),
       ),
     );
+  }
+}
+
+void _launchUrl(String url) async {
+  final uri = Uri.parse(url);
+  if (await canLaunchUrl(uri)) {
+    await launchUrl(uri);
   }
 }
