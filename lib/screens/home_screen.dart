@@ -161,10 +161,10 @@ class PortfolioPage extends StatelessWidget {
           ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 800),
             child: Text(
-              'Passionate Software Engineer with expertise in cross-platform mobile and web development. '
-              'I specialize in Flutter and React Native, focusing on creating user-centered solutions '
-              'that solve real-world problems. With experience in leading development projects from '
-              'planning to deployment, I bring both technical excellence and product vision to every project.',
+              'Passionate Software Engineer with expertise in cross-platform mobile and web development.\n'
+              'I specialize in Flutter, focusing on creating user-centered solutions that solve real-world problems.'
+              'With experience in leading development projects from planning to deployment,\n'
+              'I bring both technical excellence and product vision to every project.',
               style: Theme.of(
                 context,
               ).textTheme.bodyLarge?.copyWith(color: const Color(0xFF2E3B52)),
