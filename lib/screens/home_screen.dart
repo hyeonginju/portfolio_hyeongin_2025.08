@@ -542,11 +542,11 @@ class PortfolioPage extends StatelessWidget {
         'description':
             'A morning routine and productivity app designed to help users start their day effectively. Features intelligent notifications and habit tracking.',
         'features': [
-          'Smart morning routine planning and scheduling',
-          'Push notifications via Firebase Cloud Messaging',
-          'Habit tracking and progress visualization',
-          'Customizable morning routine templates',
-          'Weather integration and daily insights',
+          'Push Notifications via Firebase Cloud Messaging',
+          'Infertility community platform: users can create posts, comment, and recomment; photos can be included',
+          'AI Chatbot (ChatGPT API) tailored with prompts curated by medical professionals',
+          'Aggregated and curated content from videos, blogs, and news sources (displayed via InApp WebView)',
+          'Health tools for pregnant women: dangerous drug search and self-check functions',
         ],
         'link': 'https://home.dplanit.co.kr/',
       },
